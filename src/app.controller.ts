@@ -1,22 +1,22 @@
-import { Controller, Get } from '@nestjs/common';
-import { AppService } from './app.service';
+import { Body, Controller, Post } from '@nestjs/common';
+import { RocketTeamMember } from '@prisma/client';
+import { randomUUID } from 'crypto';
 import { PrismaService } from './database/prisma.service';
 
-@Controller()
+@Controller('users')
 export class AppController {
   constructor(private prisma: PrismaService) {}
 
-  @Get()
-  async getHello() {
-    const member = await this.prisma.rocketTeamMember.create({
+  @Post('create')
+  async getHello(@Body() body: any): Promise<RocketTeamMember> {
+    const { name, fun } = body;
+
+    return await this.prisma.rocketTeamMember.create({
       data: {
-        id: 'capitao',
-        name: 'guilherme',
-        function: 'ser zika',
+        id: randomUUID(),
+        name: name,
+        function: fun,
       },
     });
-    return {
-      member,
-    };
   }
 }
